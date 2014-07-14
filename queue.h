@@ -8,6 +8,7 @@ typedef struct task	T;
 struct task_manage
 {
 	T *top;		// 队列头
+	T *tail;	// 队列尾
 	uint32_t n;	// 队列元素总数
 };
 

@@ -25,11 +25,13 @@ int put(T *newTask)
 		perror("pthread_mutex_lock");
 		exit(100);
 	}
-	if (!task_manage.top) {
+	if (!task_manage.top && !task_manage.tail) {
 		task_manage.top = new_t;
+		task_manage.tail = new_t;
 	} else {
-		new_t->next = task_manage.top;
-		task_manage.top = new_t;
+		new_t->next = NULL;
+		task_manage.tail->next = new_t;
+		task_manage.tail = new_t;
 	}
 	task_manage.n++;
 	s = pthread_mutex_unlock(&mutex);
@@ -54,6 +56,9 @@ T *pop()
 	}
 	ret = task_manage.top;
 	task_manage.top = ret->next;
+	if (task_manage.top == task_manage.tail) {
+		task_manage.tail = NULL;
+	}
 	if (task_manage.n - 1 < 0) {
 		task_manage.n = 1;
 	}
@@ -74,7 +79,10 @@ int queue_exit()
 		perror("pthread_mutex_lock");
 		exit(100);
 	}
+	T *i = task_manage.top;
+	for (i; i != NULL; i = i->next) {
 
+	}
 	s = pthread_mutex_unlock(&mutex);
 	if (s != 0) {
 		perror("pthread_mutex_unlock");
