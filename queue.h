@@ -1,8 +1,11 @@
 #ifndef __QUEUE_H__
 #define __QUEUE_H__
 
+#include <pthread.h>
+#include <stdint.h>
+
 typedef struct task_manage	Tm;
-typedef struct task	T;
+typedef struct task		T;
 
 /* 任务管理结构 */
 struct task_manage
@@ -16,14 +19,15 @@ struct task_manage
 struct task
 {
 	T *next;
+	uint32_t seq;
 };
 
 static Tm task_manage;
 static pthread_mutex_t mutex;
 
 int queue_init();
-int put(T);
-T *get();
+int put(T*);
+T *pop();
 int queue_exit();
 
 #endif

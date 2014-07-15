@@ -1,6 +1,6 @@
-#include "tpool.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include "queue.h"
-
 int queue_init()
 {
 	int status;
@@ -13,13 +13,13 @@ int queue_init()
 	return 0;
 }
 
-int put(T *newTask)
+int put(T *new_t)
 {
 	int s;
-	if (!newTask) {
+	if (!new_t) {
 		return 1;
 	}
-	T *new_t = malloc(sozeof(T));
+
 	s = pthread_mutex_lock(&mutex);
 	if (s != 0) {
 		perror("pthread_mutex_lock");
@@ -59,7 +59,7 @@ T *pop()
 	if (task_manage.top == task_manage.tail) {
 		task_manage.tail = NULL;
 	}
-	if (task_manage.n - 1 < 0) {
+	if ((task_manage.n - 1) < 0) {
 		task_manage.n = 1;
 	}
 	task_manage.n--;
@@ -74,16 +74,7 @@ T *pop()
 int queue_exit()
 {
 	int s;
-	s = pthread_mutex_lock(&mutex);
-	if (s != 0) {
-		perror("pthread_mutex_lock");
-		exit(100);
-	}
-	T *i = task_manage.top;
-	for (i; i != NULL; i = i->next) {
-
-	}
-	s = pthread_mutex_unlock(&mutex);
+	s = pthread_mutex_destroy(&mutex);
 	if (s != 0) {
 		perror("pthread_mutex_unlock");
 		exit(100);
